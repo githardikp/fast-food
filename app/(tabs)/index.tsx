@@ -1,98 +1,84 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { FlatList, Image, Pressable, Text, TouchableOpacity, View } from "react-native";
+import { verifyInstallation } from 'nativewind';
+import { SafeAreaView } from "react-native-safe-area-context";
+import { images, offers } from "@/constants";
+import { Fragment } from "react";
+import { ScrollView } from "react-native-reanimated/lib/typescript/Animated";
+import CartButton from "@/components/CartButton";
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
-
-export default function HomeScreen() {
+export default function App() {
+  // Add NativeWind verification
+  // verifyInstallation();
+  
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <SafeAreaView className="flex-1 bg-white"  >
+      {/* <View className="flex-row justify-between w-full my-5 px-5">
+        <View className="flex justify-start">
+          <Text className="small-bold text-primary">Deliver To</Text>
+          <TouchableOpacity className="flex-row justify-start items-center gap-x-2">
+            <Text className="paragraph-bold text-dark-100">
+              Bangalore, India
+            </Text>
+            <Image 
+              source={images.arrowDown}
+              className="size-3"
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+        </View>
+        <Text>
+          Cart
+        </Text>
+      </View> */}
+      <FlatList
+        data={offers}
+        renderItem={({item, index})=>{
+          const isEven = index%2===0
+          return(
+            <View>
+              <Pressable className={isEven?"flex-row-reverse offer-card":"flex-row offer-card"} style={{backgroundColor:item.color}}>
+                {()=>(
+                  <Fragment>
+                    <View className="h-full w-1/2">
+                      <Image source={item.image} className="size-full" resizeMode="contain"/>
+                    </View>
+                    <View className={isEven ? "offer-card__info pl-10" : "offer-card__info pr-10"}>
+                      <Text className="h1-bold text-white-100 leading-tight">
+                        {item.title}
+                      </Text>
+                      <Image 
+                        source={images.arrowRight}
+                        className="size-10"
+                        resizeMode="contain"
+                      />
+                    </View>
+                  </Fragment>
+                )}
+              </Pressable>
+            </View>
+          )
+        }}
+        contentContainerClassName="pb-28 px-5"
+        ListHeaderComponent={
+          <View className="flex-row justify-between w-full my-5 px-5">
+          <View className="flex justify-start">
+            <Text className="small-bold text-primary">Deliver To</Text>
+            <TouchableOpacity className="flex-row justify-start items-center gap-x-2">
+              <Text className="paragraph-bold text-dark-100">
+                Bangalore, India
+              </Text>
+              <Image 
+                source={images.arrowDown}
+                className="size-3"
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+          </View>
+          <CartButton/>
+        </View>
+        }
+      />
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
