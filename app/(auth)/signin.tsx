@@ -5,6 +5,9 @@ import { router } from 'expo-router'
 const signin = () => {
   return (
     <View>
+      <Text>
+        Sign In Page
+      </Text>
       <TouchableOpacity onPress={()=>(router.push('/signup'))}> 
         <Text>
           Go to Sign Up  
